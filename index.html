@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipoca Flix - Seu Cinema em Casa</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --primary-color: #E50914;
+            --text-color: #FFFFFF;
+            --text-secondary: #808080;
+            --card-bg: #141414;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Cabeçalho Fixo em Preto Absoluto Sólido */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-color);
+            z-index: 1000;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo-container img {
+            max-height: 58px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Menus de Navegação */
+        nav {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 5px 8px;
+            border-radius: 4px;
+        }
+
+        nav a:hover, nav a:focus {
+            color: var(--text-color);
+            outline: none;
+        }
+
+        .btn-telegram {
+            background-color: var(--primary-color);
+            color: var(--text-color) !important;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .btn-telegram:hover {
+            opacity: 0.9;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 105px 20px 40px 20px;
+        }
+
+        .player-container {
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 16/9;
+            background-color: #111;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+            position: relative;
+            border: 1px solid #222;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .movie-info {
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 20px;
+        }
+
+        .movie-title {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .movie-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        button:focus, a:focus {
+            outline: 3px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        .ad-banner {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            background-color: var(--card-bg);
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+            border-radius: 4px;
+            border: 1px dashed #333;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0 20px;
+                height: 65px;
+            }
+            .logo-container img {
+                max-height: 42px;
+            }
+            nav {
+                gap: 15px;
+            }
+            nav a {
+                font-size: 12px;
+            }
+            .btn-telegram {
+                padding: 6px 10px;
+            }
+            main {
+                padding-top: 85px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="imagens/logo-oficial-pipocaflix.svg" alt="Pipoca Flix Logo">
+        </div>
+        <nav>
+            <a href="#">Início</a>
+            <a href="#">Categorias</a>
+            <a href="#">Buscar</a>
+            <a href="#" class="btn-telegram">Pedir no Bot</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="ad-banner">
+            <span>Espaço para Anúncio / Banner Discreto</span>
+        </div>
+
+        <div class="player-container">
+            <video id="videoPlayer" controls>
+                Seu navegador não suporta reprodução de vídeo.
+            </video>
+        </div>
+
+        <div class="movie-info">
+            <h1 class="movie-title" id="tituloFilme">Carregando filme...</h1>
+            <p class="movie-desc" id="descricaoFilme">Aguarde enquanto a automação busca os lançamentos para você.</p>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const titulo = document.getElementById('tituloFilme');
+            const descricao = document.getElementById('descricaoFilme');
+
+            setTimeout(() => {
+                titulo.textContent = "Exemplo: Sessão Pipoca Flix (Aguardando Automação)";
+                descricao.textContent = "Este espaço exibirá o filme sincronizado diretamente pelo seu bot/backend em Python. Aproveite a transmissão.";
+            }, 1000);
+        });
+    </script>
+
+</body>
+</html>
