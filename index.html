@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pipoca Flix - Seu Cinema em Casa</title>
+    <link rel="icon" type="image/png" href="imagens/favicon-pipocaflix.png">
     <style>
         :root {
             --bg-color: #000000;
@@ -11,6 +12,7 @@
             --text-color: #FFFFFF;
             --text-secondary: #808080;
             --card-bg: #141414;
+            --card-hover: #1f1f1f;
         }
 
         * {
@@ -28,7 +30,7 @@
             min-height: 100vh;
         }
 
-        /* Cabeçalho Fixo em Preto Absoluto Sólido */
+        /* Cabeçalho Fixo */
         header {
             position: fixed;
             top: 0;
@@ -90,53 +92,13 @@
             opacity: 0.9;
         }
 
+        /* Área Principal */
         main {
             flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 105px 20px 40px 20px;
-        }
-
-        .player-container {
-            width: 100%;
-            max-width: 1000px;
-            aspect-ratio: 16/9;
-            background-color: #111;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.8);
-            position: relative;
-            border: 1px solid #222;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .movie-info {
-            width: 100%;
-            max-width: 1000px;
-            margin-top: 20px;
-        }
-
-        .movie-title {
-            font-size: 24px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .movie-desc {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        button:focus, a:focus {
-            outline: 3px solid var(--primary-color);
-            outline-offset: 2px;
+            padding: 100px 40px 40px 40px;
+            gap: 40px;
         }
 
         .ad-banner {
@@ -144,7 +106,7 @@
             max-width: 728px;
             height: 90px;
             background-color: var(--card-bg);
-            margin: 20px auto;
+            margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -154,6 +116,85 @@
             border: 1px dashed #333;
         }
 
+        /* Seções de Categorias e Filmes */
+        .category-section {
+            width: 100%;
+        }
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+            border-left: 4px solid var(--primary-color);
+            padding-left: 10px;
+        }
+
+        .movie-row {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scroll-behavior: smooth;
+            min-height: 200px;
+            align-items: center;
+        }
+
+        .movie-row::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .movie-row::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        .movie-row::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .movie-card {
+            min-width: 160px;
+            width: 160px;
+            background-color: var(--card-bg);
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            border: 1px solid #222;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+            background-color: var(--card-hover);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 240px;
+            background-color: #222;
+            object-fit: cover;
+            display: block;
+        }
+
+        .movie-card-title {
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Mensagens de Estado */
+        .empty-message {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-style: italic;
+            padding: 10px 0;
+        }
+
+        /* Responsividade */
         @media (max-width: 768px) {
             header {
                 padding: 0 20px;
@@ -163,7 +204,7 @@
                 max-height: 42px;
             }
             nav {
-                gap: 15px;
+                gap: 10px;
             }
             nav a {
                 font-size: 12px;
@@ -172,7 +213,14 @@
                 padding: 6px 10px;
             }
             main {
-                padding-top: 85px;
+                padding: 85px 15px 20px 15px;
+            }
+            .movie-card {
+                min-width: 130px;
+                width: 130px;
+            }
+            .movie-poster {
+                height: 190px;
             }
         }
     </style>
@@ -185,40 +233,139 @@
         </div>
         <nav>
             <a href="#">Início</a>
-            <a href="#">Categorias</a>
-            <a href="#">Buscar</a>
-            <a href="#" class="btn-telegram">Pedir no Bot</a>
+            <a href="#blockbusters">Blockbusters</a>
+            <a href="#marvel">Universo Marvel</a>
+            <a href="#comfort">Comfort Movies</a>
+            <a href="#safic">Cinema Sáfico & LGBT+</a>
+            <a href="https://t.me/pipocaflixfilmes" target="_blank" class="btn-telegram">Pedir no Bot</a>
         </nav>
     </header>
 
     <main>
+        <!-- Seção 0: Blockbusters / Fura-Bolha -->
+        <section class="category-section" id="blockbusters" data-categoria="Blockbusters & Fura-Bolha">
+            <h2 class="category-title">Blockbusters & Fura-Bolha</h2>
+            <div class="movie-row"></div>
+        </section>
+
+        <!-- Banner de Monetização Discreto -->
         <div class="ad-banner">
-            <span>Espaço para Anúncio / Banner Discreto</span>
+            <span>Espaço para Anúncio / Monetização VTL</span>
         </div>
 
-        <div class="player-container">
-            <video id="videoPlayer" controls>
-                Seu navegador não suporta reprodução de vídeo.
-            </video>
-        </div>
+        <!-- Seção 1: Universo Marvel (MCU) -->
+        <section class="category-section" id="marvel" data-categoria="Universo Marvel (MCU)">
+            <h2 class="category-title">Universo Marvel (MCU)</h2>
+            <div class="movie-row"></div>
+        </section>
 
-        <div class="movie-info">
-            <h1 class="movie-title" id="tituloFilme">Carregando filme...</h1>
-            <p class="movie-desc" id="descricaoFilme">Aguarde enquanto a automação busca os lançamentos para você.</p>
+        <!-- Seção 2: Comfort Movies -->
+        <section class="category-section" id="comfort" data-categoria="Comfort Movies">
+            <h2 class="category-title">Comfort Movies (Harry Potter & Clássicos Dublados)</h2>
+            <div class="movie-row"></div>
+        </section>
+
+        <!-- Seção 3: Cinema Sáfico & LGBT+ -->
+        <section class="category-section" id="safic" data-categoria="Cinema Sáfico & LGBT+">
+            <h2 class="category-title">Cinema Sáfico & LGBT+</h2>
+            <div class="movie-row"></div>
+        </section>
+
+        <!-- Seções Clássicas Individuais -->
+        <div id="categorias" style="width: 100%; display: flex; flex-direction: column; gap: 40px;">
+            
+            <section class="category-section" data-categoria="Ficção Científica">
+                <h2 class="category-title">Ficção Científica</h2>
+                <div class="movie-row"></div>
+            </section>
+
+            <section class="category-section" data-categoria="Aventura e Fantasia">
+                <h2 class="category-title">Aventura e Fantasia</h2>
+                <div class="movie-row"></div>
+            </section>
+
+            <section class="category-section" data-categoria="Terror">
+                <h2 class="category-title">Terror</h2>
+                <div class="movie-row"></div>
+            </section>
+
+            <section class="category-section" data-categoria="Romance">
+                <h2 class="category-title">Romance</h2>
+                <div class="movie-row"></div>
+            </section>
+
+            <section class="category-section" data-categoria="Ação">
+                <h2 class="category-title">Ação</h2>
+                <div class="movie-row"></div>
+            </section>
+
         </div>
     </main>
 
+    <!-- Inclusão da Biblioteca do Supabase via CDN Oficial -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const titulo = document.getElementById('tituloFilme');
-            const descricao = document.getElementById('descricaoFilme');
+        // Credenciais do Supabase fornecidas
+        const SUPABASE_URL = 'https://vdqkngnflycdubaonmjb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkcWtuZ25mbHljZHViYW9ubWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NDg3OTcsImV4cCI6MjA4OTQyNDc5N30.K-h-9eO5l_sUa7r2e3i6v1x0l5c3v2b1n9m8l7k6j5h';
 
-            setTimeout(() => {
-                titulo.textContent = "Exemplo: Sessão Pipoca Flix (Aguardando Automação)";
-                descricao.textContent = "Este espaço exibirá o filme sincronizado diretamente pelo seu bot/backend em Python. Aproveite a transmissão.";
-            }, 1000);
-        });
+        // Inicialização do cliente Supabase
+        const { createClient } = supabase;
+        const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Função assíncrona para buscar dados e renderizar as fileiras
+        async function carregarCatalogo() {
+            try {
+                // Requisição SELECT * na tabela 'catalogo'
+                const { data: filmes, error } = await _supabase
+                    .from('catalogo')
+                    .select('*');
+
+                if (error) {
+                    console.error('Erro ao buscar dados do Supabase:', error.message);
+                    return;
+                }
+
+                // Seleciona todas as seções de categoria da página
+                const secoesCategorias = document.querySelectorAll('.category-section');
+
+                secoesCategorias.forEach(secao => {
+                    const categoriaNome = secao.getAttribute('data-categoria');
+                    const movieRow = secao.querySelector('.movie-row');
+
+                    // Filtra os filmes que pertencem à categoria atual
+                    const filmesDaCategoria = filmes.filter(filme => filme.categoria === categoriaNome);
+
+                    // Limpa o conteúdo atual da fileira
+                    movieRow.innerHTML = '';
+
+                    // Se não houver itens, exibe mensagem discreta
+                    if (filmesDaCategoria.length === 0) {
+                        movieRow.innerHTML = '<span class="empty-message">Nenhum item disponível no momento.</span>';
+                        return;
+                    }
+
+                    // Renderiza cada card dinamicamente
+                    filmesDaCategoria.forEach(filme => {
+                        const card = document.createElement('div');
+                        card.className = 'movie-card';
+
+                        card.innerHTML = `
+                            <img class="movie-poster" src="${filme.capa}" alt="${filme.titulo}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'240\'><rect width=\'100%\' height=\'100%\' fill=\'%23222\'/><text x=\'50%\' y=\'50%\' fill=\'%23808080\' font-size=\'12\' font-family=\'sans-serif\' text-anchor=\'middle\' dominant-baseline=\'middle\'>Capa Indisponível</text></svg>'">
+                            <div class="movie-card-title" title="${filme.titulo}">${filme.titulo}</div>
+                        `;
+
+                        movieRow.appendChild(card);
+                    });
+                });
+
+            } catch (err) {
+                console.error('Erro inesperado ao processar o catálogo:', err);
+            }
+        }
+
+        // Executa a função assim que o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', carregarCatalogo);
     </script>
-
 </body>
 </html>
