@@ -303,7 +303,6 @@
     </main>
 
     <script>
-        // Função auxiliar robusta para ler arquivos CSV com segurança e tratar aspas
         function parseCSV(text) {
             let lines = text.split('\n');
             let result = [];
@@ -331,7 +330,6 @@
             return a;
         }
 
-        // Função principal para carregar o CSV local e renderizar o catálogo
         async function carregarCatalogoLocal() {
             try {
                 const response = await fetch('catalogo.csv');
@@ -341,26 +339,27 @@
                 const csvText = await response.text();
                 const filmes = parseCSV(csvText);
 
-                // Seleciona todas as seções de categoria da página
+                console.log("Total de filmes lidos do CSV:", filmes.length);
+                console.log("Exemplo do primeiro filme lido:", filmes[0]);
+
                 const secoesCategorias = document.querySelectorAll('.category-section');
 
                 secoesCategorias.forEach(secao => {
                     const categoriaNome = secao.getAttribute('data-categoria');
                     const movieRow = secao.querySelector('.movie-row');
 
-                    // Filtra os filmes que pertencem à categoria atual
-                    const filmesDaCategoria = filmes.filter(filme => filme.categoria && filme.categoria.trim() === categoriaNome);
+                    const filmesDaCategoria = filmes.filter(filme => {
+                        const catFilme = filme.categoria ? filme.categoria.trim().toLowerCase() : '';
+                        return catFilme === categoriaNome.trim().toLowerCase();
+                    });
 
-                    // Limpa o conteúdo atual da fileira
                     movieRow.innerHTML = '';
 
-                    // Se não houver itens, exibe mensagem discreta
                     if (filmesDaCategoria.length === 0) {
                         movieRow.innerHTML = '<span class="empty-message">Nenhum item disponível no momento.</span>';
                         return;
                     }
 
-                    // Renderiza cada card dinamicamente
                     filmesDaCategoria.forEach(filme => {
                         const card = document.createElement('div');
                         card.className = 'movie-card';
@@ -379,7 +378,6 @@
             }
         }
 
-        // Executa a função assim que o DOM estiver carregado
         document.addEventListener('DOMContentLoaded', carregarCatalogoLocal);
     </script>
 </body>
