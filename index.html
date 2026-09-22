@@ -302,29 +302,44 @@
         </div>
     </main>
 
-    <!-- Inclusão da Biblioteca do Supabase via CDN Oficial -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Credenciais configuradas corretamente com a nova URL do Supabase
-        const SUPABASE_URL = 'https://htfcnapsphmznxsnkvuc.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_Feogm2wyYp-dt8y9xE6vBA_uN6JgNAk';
+        // Função auxiliar robusta para ler arquivos CSV com segurança e tratar aspas
+        function parseCSV(text) {
+            let lines = text.split('\n');
+            let result = [];
+            let headers = parseCSVLine(lines[0]);
 
-        // Inicialização do cliente Supabase
-        const { createClient } = supabase;
-        const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Função assíncrona para buscar dados e renderizar as fileiras
-        async function carregarCatalogo() {
-            try {
-                // Requisição SELECT * na tabela 'catalogo'
-                const { data: filmes, error } = await _supabase
-                    .from('catalogo')
-                    .select('*');
-
-                if (error) {
-                    console.error('Erro ao buscar dados do Supabase:', error.message);
-                    return;
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                let currentline = parseCSVLine(lines[i]);
+                let obj = {};
+                for (let j = 0; j < headers.length; j++) {
+                    obj[headers[j]] = currentline[j] !== undefined ? currentline[j] : '';
                 }
+                result.push(obj);
+            }
+            return result;
+        }
+
+        function parseCSVLine(text) {
+            let re = /(".*?"|[^",]+)(?=\s*,|\s*$)/g;
+            let a = [];
+            let matches = text.match(re);
+            if (matches) {
+                a = matches.map(s => s.replace(/^"|"$/g, '').trim());
+            }
+            return a;
+        }
+
+        // Função principal para carregar o CSV local e renderizar o catálogo
+        async function carregarCatalogoLocal() {
+            try {
+                const response = await fetch('catalogo.csv');
+                if (!response.ok) {
+                    throw new Error('Não foi possível carregar o arquivo catalogo.csv');
+                }
+                const csvText = await response.text();
+                const filmes = parseCSV(csvText);
 
                 // Seleciona todas as seções de categoria da página
                 const secoesCategorias = document.querySelectorAll('.category-section');
@@ -334,7 +349,7 @@
                     const movieRow = secao.querySelector('.movie-row');
 
                     // Filtra os filmes que pertencem à categoria atual
-                    const filmesDaCategoria = filmes.filter(filme => filme.categoria === categoriaNome);
+                    const filmesDaCategoria = filmes.filter(filme => filme.categoria && filme.categoria.trim() === categoriaNome);
 
                     // Limpa o conteúdo atual da fileira
                     movieRow.innerHTML = '';
@@ -360,12 +375,12 @@
                 });
 
             } catch (err) {
-                console.error('Erro inesperado ao processar o catálogo:', err);
+                console.error('Erro ao carregar o catálogo do CSV local:', err);
             }
         }
 
         // Executa a função assim que o DOM estiver carregado
-        document.addEventListener('DOMContentLoaded', carregarCatalogo);
+        document.addEventListener('DOMContentLoaded', carregarCatalogoLocal);
     </script>
 </body>
 </html>
