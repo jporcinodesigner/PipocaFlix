@@ -162,6 +162,9 @@
             cursor: pointer;
             transition: transform 0.2s, background-color 0.2s;
             border: 1px solid #222;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         .movie-card:hover {
@@ -224,6 +227,9 @@
             }
         }
     </style>
+
+    <!-- Importação do SDK do Supabase via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -303,66 +309,50 @@
     </main>
 
     <script>
-        function parseCSV(text) {
-            let lines = text.split('\n');
-            let result = [];
-            let headers = parseCSVLine(lines[0]);
+        // Configuração do Supabase (Insira suas credenciais reais aqui)
+        const SUPABASE_URL = 'SUA_SUPABASE_URL_AQUI';
+        const SUPABASE_ANON_KEY = 'SUA_SUPABASE_ANON_KEY_AQUI';
 
-            for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
-                let currentline = parseCSVLine(lines[i]);
-                let obj = {};
-                for (let j = 0; j < headers.length; j++) {
-                    obj[headers[j]] = currentline[j] !== undefined ? currentline[j] : '';
-                }
-                result.push(obj);
-            }
-            return result;
-        }
+        const { createClient } = supabase;
+        const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function parseCSVLine(text) {
-            let re = /(".*?"|[^",]+)(?=\s*,|\s*$)/g;
-            let a = [];
-            let matches = text.match(re);
-            if (matches) {
-                a = matches.map(s => s.replace(/^"|"$/g, '').trim());
-            }
-            return a;
-        }
-
-        async function carregarCatalogoLocal() {
+        // Função principal para carregar o catálogo do Supabase e renderizar na tela
+        async function carregarCatalogoSupabase() {
             try {
-                const response = await fetch('catalogo.csv');
-                if (!response.ok) {
-                    throw new Error('Não foi possível carregar o arquivo catalogo.csv');
+                // Altere 'filmes' para o nome exato da sua tabela no Supabase se for diferente
+                const { data: filmes, error } = await _supabase
+                    .from('filmes')
+                    .select('*');
+
+                if (error) {
+                    throw error;
                 }
-                const csvText = await response.text();
-                const filmes = parseCSV(csvText);
 
-                console.log("Total de filmes lidos do CSV:", filmes.length);
-                console.log("Exemplo do primeiro filme lido:", filmes[0]);
-
+                // Seleciona todas as seções de categoria da página
                 const secoesCategorias = document.querySelectorAll('.category-section');
 
                 secoesCategorias.forEach(secao => {
                     const categoriaNome = secao.getAttribute('data-categoria');
                     const movieRow = secao.querySelector('.movie-row');
 
-                    const filmesDaCategoria = filmes.filter(filme => {
-                        const catFilme = filme.categoria ? filme.categoria.trim().toLowerCase() : '';
-                        return catFilme === categoriaNome.trim().toLowerCase();
-                    });
+                    // Filtra os filmes que pertencem à categoria atual
+                    const filmesDaCategoria = filmes.filter(filme => filme.categoria && filme.categoria.trim() === categoriaNome);
 
+                    // Limpa o conteúdo atual da fileira
                     movieRow.innerHTML = '';
 
+                    // Se não houver itens, exibe mensagem discreta
                     if (filmesDaCategoria.length === 0) {
                         movieRow.innerHTML = '<span class="empty-message">Nenhum item disponível no momento.</span>';
                         return;
                     }
 
+                    // Renderiza cada card dinamicamente transformando em link direto para o Telegram
                     filmesDaCategoria.forEach(filme => {
-                        const card = document.createElement('div');
+                        const card = document.createElement('a');
                         card.className = 'movie-card';
+                        card.href = filme.link_telegram || '#';
+                        card.target = '_blank';
 
                         card.innerHTML = `
                             <img class="movie-poster" src="${filme.capa}" alt="${filme.titulo}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'240\'><rect width=\'100%\' height=\'100%\' fill=\'%23222\'/><text x=\'50%\' y=\'50%\' fill=\'%23808080\' font-size=\'12\' font-family=\'sans-serif\' text-anchor=\'middle\' dominant-baseline=\'middle\'>Capa Indisponível</text></svg>'">
@@ -374,11 +364,12 @@
                 });
 
             } catch (err) {
-                console.error('Erro ao carregar o catálogo do CSV local:', err);
+                console.error('Erro ao carregar o catálogo do Supabase:', err);
             }
         }
 
-        document.addEventListener('DOMContentLoaded', carregarCatalogoLocal);
+        // Executa a função assim que o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', carregarCatalogoSupabase);
     </script>
 </body>
 </html>
